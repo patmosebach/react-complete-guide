@@ -5,22 +5,12 @@ import Person from './Person/Person';
 class App extends Component {
   state = {
     persons: [
-      { name: 'Pat', age: 23 },
-      { name: 'Adam', age: 31 },
-      { name: 'Dan', age: 28 }
+      { id:4321, name: 'Pat', age: 23 },
+      { id:6543, name: 'Adam', age: 31 },
+      { id:5432, name: 'Dan', age: 28 }
     ],
-    otherState: 'some other stuff'
-  }
-
-  switchPersonsHandler = (newName) => {
-    console.log('Was clicked!');
-    this.setState({
-      persons: [
-        { name: newName, age: 24  },
-        { name: 'Adam', age: 32 },
-        { name: 'Dan', age: 28 }
-      ]
-    })
+    otherState: 'some other stuff',
+    showPersons: false
   }
 
   nameChangedHandler = (event) => {
@@ -33,6 +23,20 @@ class App extends Component {
     })
   }
 
+  togglePersonsHandler = () => {
+    this.setState({
+      showPersons: !this.state.showPersons
+    })
+  }
+
+  deletePersonHandler = (personIndex) => {
+    //const persons = this.state.person.slice();
+    const persons = [...this.state.persons];
+
+    persons.splice(personIndex, 1);
+    this.setState({persons:persons})
+  }
+
   render() {
     const style = {
       backgroundCoor: 'white',
@@ -42,24 +46,30 @@ class App extends Component {
       cursor: 'pointer'
     };
 
+    let persons = null;
+
+    if(this.state.showPersons){
+      persons = (
+        <div>
+          {this.state.persons.map((person, index) => {
+            return <Person
+              click={() => this.deletePersonHandler(index)}
+              name={person.name}
+              age={person.age} 
+              key = {person.id}/>
+          })}
+        </div>
+      );
+    }
+
     return (
       <div className="App">
           <h1>Hi, I'm Pat the react app</h1>
           <p>this is really working</p>
           <button 
           style={style}
-          onClick={() => this.switchPersonsHandler('Patrick')} >Switch Name</button>
-          <Person 
-            name={this.state.persons[0].name} 
-            age={this.state.persons[0].age}/>
-          <Person 
-            name={this.state.persons[1].name} 
-            age={this.state.persons[1].age}/>
-          <Person 
-            name={this.state.persons[2].name} 
-            age={this.state.persons[2].age} 
-            click={this.switchPersonsHandler.bind(this, 'Patty')}
-            changed={this.nameChangedHandler}>My Hobbies: Drinking</Person>
+          onClick={this.togglePersonsHandler} >Show People</button>
+          {persons}
       </div>
     );
 
