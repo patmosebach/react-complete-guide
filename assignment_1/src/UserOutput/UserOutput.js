@@ -1,11 +1,12 @@
 import React, {Component} from 'react';
+import './UserOutput.css';
 
 class UserOutput extends Component {
     render(){
         return (
-            <div>
+            <div className="UserOutput">
+                <p>User</p>
                 <p>{this.props.userName}</p>
-                <p>Output 2</p>
             </div>
         )
     }

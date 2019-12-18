@@ -1,10 +1,11 @@
 import React, {Component} from 'react';
+import './UserInput.css';
 
 class UserInput extends Component {
     render(){
         return (
-            <div>
-                <input></input>
+            <div className="UserInput"> 
+                <input type="text" onChange={this.props.change} value={this.props.name}></input>
             </div>
         )
     }

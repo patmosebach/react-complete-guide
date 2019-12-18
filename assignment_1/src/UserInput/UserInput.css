@@ -1,0 +1,8 @@
+.UserInput{
+    margin-bottom: 10px;
+    width: 20%;
+    align-items: center;
+    text-align: center;
+    background-color: aqua;
+    outline-color: blueviolet;
+}
