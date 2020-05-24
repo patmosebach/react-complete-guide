@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
-import Person from './Person/Person';
+import Persons from '../components/Persons/Persons';
+import Person from '../components/Persons/Person/Person';
 
 class App extends Component {
   state = {
@@ -63,14 +64,10 @@ class App extends Component {
     if(this.state.showPersons){
       persons = (
         <div>
-          {this.state.persons.map((person, index) => {
-            return <Person
-              click={() => this.deletePersonHandler(index)}
-              name={person.name}
-              age={person.age} 
-              key = {person.id}
-              changed={(event) => this.nameChangedHandler(event, person.id)}/>
-          })}
+          <Persons
+            persons={this.state.persons}
+            clicked={this.deletePersonHandler}
+            changed={this.nameChangedHandler}/>
         </div>
       );
 
@@ -95,10 +92,11 @@ class App extends Component {
         <h1>Hi, I'm Pat the react app</h1>
         <p className={classes.join(' ')} >this is really working</p>
         <button 
-        className="button"
-        onClick={this.togglePersonsHandler} 
-        alt={this.state.showPersons}
-        >Show People</button>
+          className="button"
+          onClick={this.togglePersonsHandler} 
+          alt={this.state.showPersons}>
+          Show People
+        </button>
         {persons}
       </div>
     );
