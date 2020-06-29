@@ -16,7 +16,7 @@ const StyledDiv = styled.div`
 `;
 
 const person = (props) => {
-    
+    console.log('[Person.js] rendering...');
     return (
         <StyledDiv>
             <p onClick={props.click}>I'm a {props.name} and I am {props.age} years old!</p>
