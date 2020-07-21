@@ -1,0 +1,519 @@
+Section 7: Diving Deeper into Components and React Internals
+
+85. A Better Project Structure
+
+	Folders:
+		assets
+			-images
+			-content etc
+		components
+			-Components
+			-Child components
+		containers
+			-Containers or main pages
+			
+		make sure your imports are correct when modifying structure.
+		
+86. Splitting an App Into Components
+	Class components STATEFUL components
+	Functional components STATELESS components
+	Best Practice: Use as many functional components as possible
+	
+	Persons.js componenet:
+	-Splitting the logic to build the list of person componenets into a Person*S* componenet makes the container cleaner
+		-Only need to pass the this.state.person state object and both handlers           
+		  <Persons
+            persons={this.state.persons}
+            clicked={this.deletePersonHandler}
+            changed={this.nameChangedHandler}/>
+	
+	Cockpit.js component:
+	- We want to put the header and toggle button into it's own component
+	- Also putting the logic of controlling the css classes.
+	- Create it's own .css file and import it.
+	- grab the logic that handles the classes and put it above the return statement.
+	- pass various state variables as props so that the component can use them to add and remove classes as needed.
+	
+	The App.js file is much leaner now.
+	
+87. Comparing Stateless and Stateful Components
+	-Class based Components
+		-Typically stateful
+		-Few class components that control the site
+		-Refered to as containers
+		
+	-Presentational Components
+		-Typically stateless
+		-Many design based components that are passed variables to control the visuals
+		
+89. Class-based vs Functional Components
+
+	-Class-based
+		-class XY extends Components
+			Access to State
+				Can change state using setState
+				Lifecycle Hooks
+		
+		- Access State and Props via "this"
+			this.state.XY & this.props.XY
+			
+	~~~~~~~~~~~~~~~~~~~
+	Use if you need to manage State or access to Lifecycle Hooks and you DONT want to use React Hooks!
+				
+				
+	
+	-Functional
+		-const XY = props => {...}
+			Access to state
+				Can change state using (useState())
+				NOT Lifecycle Hooks
+				
+		-Access Props via "props"
+			props.XY
+				
+	~~~~~~~~~~~~~~~~
+	Use in all other cases!
+	
+90. Class Componnet Lifecycle Overview
+	-Only available in Class-based Components or with hooks
+	-React will run them automatically when certain criteria are met
+	
+	-constructor()
+		-Must call super(props)
+		Do:
+			-Set up State
+			-Basic Initialization 
+		Don't
+			-Cause Side effect etc.
+			-Call GA
+			-Sending a http request
+			-Storing data in local storage
+			
+	-getDerivedStateFromProps()
+		Used to sync your components state to the props being passed in
+		Do:
+			-Sync state
+		Don't:
+			-Cause Side effects etc.
+	
+	-render()
+	
+	- Render Child Components 
+	
+	-componentDidMount()
+		Do:
+			-Cause side effects
+			-Call Http requests
+			-Manage state after the http request comes back
+			
+		Don't:
+			-Manage state
+			
+	Legacy: can be used in react 16 but will likely be removed as some point
+		removed because they were rarely used and could be used incorrectly
+	-shouldComponentUpdate()
+	-getSnapshotBeforeUpdate()
+	-componentDidCatch()
+	-componentWillUnmount()
+	
+	-componentDidUpdate()
+
+91. Component Creation Lifecycle in Action
+	Excersice: Add console.log('[file] lifecyclehook') in order to visualize when each get's run.
+	
+92. Component Update Lifecycle (for props Changes)
+
+	-shouldComponentUpdate()
+		-Allows you to decide whether to continue updating or not
+		-Helps to reduce unwanted renders
+		
+	-getSnapshotBeforeUpdate()
+		- Last-minute DOP ops
+			grab current scroll position
+			restore current scroll position
+			
+	-componentDidUpdate()
+		Let's you know if all other are done.
+		Cause side-effects
+		call HTTP requests
+		SetState in the async response of an http request but not syncrounously 
+		
+93. Component Update Lifecycle (for state Changes)
+	Most important lifecycle hooks
+	-componentDidMount
+		fetch new data from server
+	-shouldComponentUpdate
+		PERFORMANCE improvements
+	-componentDidUpdate
+		fetch new data from server
+		
+94. Using useEffect() in Functional Components
+	-Hooks equivilent to class based lifecycle hooks
+	
+	-useEffect Hook!!!!!!!!!!!
+		second most important after useState hooks
+		useEffect combines functionality of all class based lifecycle hooks >:O
+		
+		useEffect functions as the componenetDidMount and componentDidUpdate combined
+		This is because useEffect is called on create and on update.
+		useState can be used at the beginning to replace getDerivedStateFromProps
+		
+95. Controlling the useEffect() Behavior
+	- How do we only call an http request when the component FIRST loads?
+		-the second paramter of useEffect is the object that you want to watch for to run the useEffect on.
+		-We can pass props.persons to run only when props.persons changes.
+		- Feel free to use useEffect more than once to run different things depending on the object you want to watch.
+		- You can force it to run the first time if you pass [] empty array so that the empty array can never change.
+		
+96. Cleaning up with Lifecycle Hooks & useEffect()
+	- You can have a return within the useEffect function call which is run when the component is disposed of.
+	- It is flexible. if you pass second argument [] the return function runs only when the component is destroyed if you pass nothing it will run every time.
+	
+	example:
+		You could use the cleanup for canceling an alarm on the page.
+		clear the timer when the Cockpit is destroyed. If you click it fast enough the intial alert will not show.
+		
+97. Using shouldComponentUpdate for Optimization
+	- In the shouldComponentUpdate lifecycle hook you can compare the two states to decide if you should return true or false for updateing the component.
+	ex.
+	if(nextProps.persons !== this.props.persons){
+      return true;
+    }else{
+      return false;
+    }
+	
+99. Optimizing Functional Components with React.memo()
+	Wrap the functional component's export with React.memo()
+		
+		export default React.memo(cockpit);
+		
+	React.memo will only update the component should one of the props change.
+	
+	Utilize the memo functionality by only passing props that are used by the component
+	
+100. When should you optimize?
+	A lot of components update everytime their parents update.
+	
+	If you wrote logic for every component shouldComponentUpdate but only 30% need it then you are wasting runtime and development time.
+	
+101. PureComponents instead of shouldComponentUpdate
+
+	If you want to update on all prop changes like React.memo() extend PureComponent rather than Component. 
+	
+102. How React updates the DOM
+
+	Based on the updated virtualDOM React will compare OldVDOM and NewVDOM to determine if it needs to update the actual DOM
+	
+	Furthermore it only updates the Real DOM in places where the differences were found
+	
+103. Rendering Adjacent JSX elements
+
+	You can only return one jsx element in the JSX render return. How can we hack this?
+	
+	You can return an array of JSX elements as long as they have a !key! attribute
+	
+	return (
+		[
+			<p key={1} onClick={this.props.click}>I'm a {this.props.name} and I am {this.props.age} years old!</p>,
+			<p key={2} >{this.props.children}</p>,
+			<input key={3} type="text" onChange={this.props.changed} value={this.props.name} />
+		]
+	)
+	
+	You can also create and return children from an auxillary component.
+	
+	Auxillary.js		
+		const auxillary = props => props.children;
+
+		export default auxillary;
+		
+	Person.js render()
+		return (
+            <Auxillary>
+				<Adjacent JSX elements>
+				<"">
+				<"">
+            </Auxillary>
+		
+105. Using React.Fragment
+
+	Aux custum HOC can be replaced with React.Fragment.
+	
+106. Higher Order Components (HOC) - Intro
+	Just wraps another component and adds a small bit of logic/feature
+	
+	You could create a HOC that adds a class to the larger div so you don't have to.
+	
+	WithClass HOC isn't that helpful but here are some examples that could help.
+	
+	Error handling for components with http requests
+	Reused styling
+	
+	WithClass.js
+		import React from 'react';
+
+		const withClass = props => (
+			<div className={props.classes}>
+				{props.children}
+			</div>
+		);
+
+		export default withClass;
+		
+	App.js class usage
+	
+	render(){
+		    return (
+			  <WithClass classes={classes.App}>
+				<button 
+				  onClick={() => {
+					this.setState({showCockpit: false});
+					}}
+				>Remove Cockpit
+				</button>
+				{this.state.showCockpit ? <Cockpit 
+				  title={this.props.appTitle}
+				  showPersons={this.state.showPersons}
+				  personsLength={this.state.persons.length}
+				  clicked={this.togglePersonsHandler} /> : null }
+				{persons}
+			  </WithClass>
+			);
+	}
+
+	- The main reason to use this <Aux> Component would be to avoid the unnecessary <div> thus keeping the html cleaner 
+	
+107. Another Form of HOCs
+	You can create a function HOC that simply returns a function. You would then wrap your export with this function and it will return a functional component that wraps your Wrapped Component in it. 
+	
+	Some 3rd party extensions 
+		extra style
+		Extra logic
+	
+	withClass.js
+	
+		import React from 'react';
+
+		const withClass = (WrappedComponent, className) => {
+			return props => (
+				<div className={className}>
+					<WrappedComponent />
+				</div>
+			);
+		}
+
+		export default withClass;
+
+	App.js Export
+	
+		export default withClass(App, classes.App);
+		
+108. Passing Unknown Props
+
+	We can use withClass for our Person component as well. Only problem is the WrappedComponent doesn't have any props on it so we need to pass props dynamically.
+	
+	You can use the spread operator to give all the props to the Wrapped component like so. (note the spread operator "...")
+		
+    return props => (
+        <div className={className}>
+            <WrappedComponent {...props}/>
+        </div>
+	
+109. Setting State Correctly
+
+	You can set the state incorrectly.
+	
+	this.setState does not run immediately, rather it is scheduled by React when it gets resources
+	
+	Depend on the Previous State:
+		WRONG
+			this.setState({ 
+				  persons: persons,
+				  changeCounter: this.state.changeCounter + 1 
+			})
+					  
+		Pass a function to this.setState with prevState!
+			this.setState((prevState, props) => {
+			  return { 
+				persons: persons,
+				changeCounter: prevState.changeCounter + 1 
+			  };
+			});
+		
+110. Using PropTypes
+	Improve recieving props :)
+		props.children is special
+		
+	You can be more clear which props you class is using and throw errors when a prop is passed incorrectly.
+	
+	Example: Passing an integer to a string prop or int to string that is used in a calculation
+	
+	Install Prop Types package!!	
+		npm install --save prop-types
+		
+	Import PropTypes
+		import PropTypes from 'prop-types';
+
+	Use PropTypes as a propertie of key value pairs at the bottom above the export
+		Person.propTypes = {
+			click: PropTypes.func,
+			name: PropTypes.string,
+			changed: PropTypes.func,
+			age: PropTypes.number
+		};
+		
+111. Using Refs
+	How do you get access to any JSX element? Ex. focus the element or add classes.
+	
+	On any element you can add a special ref keyword
+	
+	Use it to focus on an element
+	
+		componentDidMount(){
+			this.inputElement.focus();
+		}
+	
+		<input 
+			key={3} 
+			ref={(inputEl) => {this.inputElement = inputEl}}
+			type="text" 
+			onChange={this.props.changed} 
+			value={this.props.name} 
+		/>
+	
+	More modern Approach
+	
+		constructor(props){
+			super(props);
+			this.inputElementRef = React.createRef();
+		}
+		
+		componentDidMount(){
+			this.inputElementRef.current.focus();
+		}
+		
+		render(){
+		
+			<input 
+				key={3} 
+				//ref={(inputEl) => {this.inputElement = inputEl}}
+				ref = {this.inputElementRef}
+				type="text" 
+				onChange={this.props.changed} 
+				value={this.props.name} 
+			/>
+		}
+		
+112. Refs with React Hooks
+	
+	How to use Refs in functional components
+	
+	You can set the ref using useRef hook. Make sure to do the function call in the useEffect so that the render cycle gets rendered before calling a dom element.
+	
+		import React, { useEffect, useRef } from 'react';
+	
+		const toggleBtnRef = useRef(null);		
+		
+		useEffect(() => {
+			console.log('[Cockpit.js] useEffect');
+
+			toggleBtnRef.current.click();
+			
+			return () => {
+				console.log('[Cockpit.js] cleanup work in useEffect');
+			};
+		}, []);
+		
+		return(
+			<button 
+				ref={toggleBtnRef}
+				className={btnClass}
+				onClick={props.clicked}
+				>Show People</button>
+		)
+
+
+113. Understanding Prop Chain Problems
+
+	Say you have a prop that you just need to forward to a child through a more generic component.
+	
+	This isn't great for reusibility and if someone else were to use it they would need to pass the prop even though just the child needs it.
+	
+	Context can be used (ContextAPI :D)
+	
+114. Using the Context API
+
+	Create a context component for deep components to access variables without passing them through middle parent components
+		
+		import React from 'react';
+
+		const authContext = React.createContext({
+			authenticated: false,
+			login: () => {}
+		});
+
+		export default authContext;
+		
+	You can use this context component by wrapping components with the provider
+	
+		import AuthContext from '../context/auth-context';
+	
+		<AuthContext.Provider 
+		  value={{
+			authenticated: this.state.authenticated, 
+			login: this.loginHandler}}
+		>
+		  {this.state.showCockpit ? (
+			<Cockpit 
+			  title={this.props.appTitle}
+			  showPersons={this.state.showPersons}
+			  personsLength={this.state.persons.length}
+			  clicked={this.togglePersonsHandler}
+			  />
+		  ) : null}
+		  {persons}
+		</AuthContext.Provider>
+		
+	Consume this by wrapping the consuming jsx with a consumer component after importing it and pass a anonymous function with context parameter.
+	
+		import AuthContext from '../context/auth-context';
+		
+		//Person.js
+		<AuthContext.Consumer>
+			{(context) => context.authenticated ? <p>Authenticated!</p> : <p>Please Login!</p>}
+		</AuthContext.Consumer>
+		
+		//Cockpit.js
+		<AuthContext.Consumer>
+			{(context) => <button onClick={context.login}>Log in</button>}
+		</AuthContext.Consumer>
+		
+115. contextType & useContext()
+
+	Instead of using the wrapping component in the jsx you can use a different way to access context
+	
+	contextType for Class based components!!! :D
+	
+		//Important Piece
+		static contextType = AuthContext;
+			
+		componentDidMount(){
+			//this.inputElement.focus();
+			this.inputElementRef.current.focus();
+			console.log(this.context.authenticated);
+		}
+		
+		//Inside render(){return()}
+		{this.context.authenticated ? <p>Authenticated!</p> : <p>Please Login!</p>}
+		
+		
+	useContext() for functional based hook components!!!! :DOM
+	
+		import React, { useEffect, useRef, useContext } from 'react';
+		
+		const authContext = useContext(AuthContext);
+
+		console.log(authContext.authenticated);
+		
+		//Inside return()
+		<button onClick={authContext.login}>Log in</button>

@@ -1,0 +1,160 @@
+Section 5: Styling React Components & Elements
+
+65. Outlining the Problem Set
+	In line styles are okay but we want to beable to dynamically change stuff.
+	
+66. Setting Styles Dynamically
+
+	- Using inline styles you can add expressions in conditional blocks to change the inline styles
+		ex. 
+			render(){
+				const style = {
+					backgroundColor: 'blue',
+					color: 'white'
+				}
+				
+				if(num selected > 10){
+					style.backgroundColor = 'red';
+					style.color = 'black';
+				}
+			}
+			
+67. Setting Class Names Dynamically
+	
+	- Create a js array to hold a string of class names and add and remove them dynamically
+		ex. 
+		
+			render(){
+				let classes = [];
+				if(this.state.name.length < 15){
+					classes.push('red'); //make input red if over char limit?? classes = ['red']
+				}
+				
+				if(this.state.persons.length < 2){
+					classes.push ('bold'); //classes = ['red', 'bold']
+				}
+			}
+			
+68. Using Radium for Media Queries
+	- Radium is a third party package that allows for 
+	- view/terminal/$ npm install --save radium
+	- In line selectors and media queries *!!Pretty Awesome!!*
+	
+	ex. Setup
+		Import Radium from 'radium';
+		...
+		export default Radium(person);
+		
+	ex. In line Selector
+		const style={
+			':hover': { 								//need '' around css property because js strings cannot start with :
+				backgroundColor: 'lightgreen'
+				color: 'black'
+			}
+		}
+		
+69. Using Radium Media Queries
+
+	- const style = {
+		'@media (min-width: 500px)': {
+			width: '450px'
+		}
+	}
+	
+	-To use media queries need to wrap App div in !!!!!!<StyleRoot></StyleRoot>!!!!!!!
+	
+70. Introducing Styled Components
+	-Create new styled components outside of your components.
+	
+	ex.
+		const StyledDiv = styled.div`
+			width: 60%;
+			margin: 16px auto;
+			border: 1px solid #eee;
+			box-shadow: 0 2px 3px #ccc;
+			padding: 16px;
+			text-align: center;
+
+			@media (min-width: 500px) {
+				width: 450px;
+			}   
+		`;
+		
+		Use:
+		<StyledDiv>
+			<p>hello</p>
+		</StyledDiv>
+		
+71. More on Styled Components
+	- Use styled components all over for different types of elements. 
+	- Elements will still have their normal props such as button and onClick=""
+	
+	ex. const StyledButton = styled.button`
+		  background-color: green;
+		  color: white;
+		  font: inherit;
+		  border: 1x solid blue;
+		  padding: 8px;
+		  cursor: pointer;
+		  &:hover {
+			background-color: lightgreen;
+			color: black;
+		  }
+		`;
+		
+		Use:
+			<StyledButton 
+				onClick={this.togglePersonsHandler} >Show People
+			</StyledButton>
+			
+72. Styled Components & Dynamic Styles
+	-Pass props to your styled components 
+	
+	ex.
+		<StyledButton 
+        onClick={this.togglePersonsHandler} 
+        alt={this.state.showPersons} // PROP TO ALTER COLOR based on showPersons bool
+        >Show People</StyledButton>
+		
+		const StyledButton = styled.button`
+		  background-color: ${props => props.alt ? 'red' : 'green'};
+		  color: white;
+		  font: inherit;
+		  border: 1x solid blue;
+		  padding: 8px;
+		  cursor: pointer;
+		  &:hover {
+			background-color: ${props => props.alt ? 'salmon' : 'lightgreen'};
+			color: black;
+		  }
+		`;
+		
+73. Working with CSS Modules
+	-CSS modules are a good way to seperate css and js from eachother.
+	-To add css modules to react-scripts 1.x and lower you need to npm run eject and add the following to the test:css options in the cofig/webpack.config.dev.js and **config.prod.js:
+				  modules: true,
+                  localIdentName: '[name]__[local]__[hash:base64:5]'
+				  
+	- react-scripts 2.0 and higher you need to change the css file extension to filename.module.css and change the import to match
+	- 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		
+		
+		

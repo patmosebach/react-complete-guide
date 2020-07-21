@@ -1,0 +1,138 @@
+CREATE react app
+
+sudo npm install create-react-app -g
+
+create-react-app react-complete-guide
+create-react-app react-complete-guide --scripts-version 1.1.5 (creates same structure as he does in tutorial)
+
+
+29. Understanding Componenet Basics
+	- Sometimes .js files have .jsx extension
+	- Normally react apps are created with one </ app> element on id="root" element
+	- React componnents can return html code, reach out to internet, do some calculations, listen to events
+	- export default App;
+		- Meants that when you "import App from './App';" it will import the App component class by default
+
+30. Understanding JSX
+	- you can return React.createElement('html element', null, <children>) from a render() function
+		-ex. return React.createElement('div', {className: 'App'}, React.createElement('h1', null, 'I\'m Pat an App!!!'))
+		
+	-JSX is not html it is javascript that is compiled into React.createElement
+	
+31. JSX Restrictions
+	- class is a reserverd work in javascript so we use *className*
+		-class name gets compiled to class
+	- You can only return one root element in render
+		- You can return many using json but it is generally just one root element
+		- Nest all elements in one root element
+			- This will allow css to be applied to the one root element
+
+32. Creating a Functional Component
+	- You can create components such as app to return snippets of html
+	
+33. Components & JSX Cheat Sheet
+	
+34. Working with Components & Re-Using Them
+	- You can reuse these components as many times as you want throughout the app
+	- You can make them configurable to do different things based on props
+	
+35. Outputting Dynamic Content
+	- you can put stuff inside your component to make each one different 
+		ex. <p>Hi my name is Pat and I\'m Math.floor(Math.random() * 30) years old!</p>
+		
+36. Working with Props
+	- You can pass props inside of the component to have data flow from the parent to child.
+		ex.<Person name="Pat" age="24"/>		(props are "name" and "age")
+		ex. const person = (props) => {
+				return <p>I'm a {props.name} and I am {props.age} years old!</p>
+			};
+			
+37. Understanding the Children Property
+	- The props.Children property is the content within the opening and closing components tags.
+		ex. <Person name="Dan" age="28" >My Hobbies: Drinking</Person> ("My Hobbies: Drinking" is the child prop)
+		
+			<div>
+				<p>I'm a {props.name} and I am {props.age} years old!</p>
+				<p>{props.children}</p>
+			</div>
+			
+38. Understanding & Using State
+	- You can use the state property to hold variables for the component.
+	- Variables on the state that change will dynamically flow into child properties.
+		ex.   state = {
+				persons: [
+				  { name: 'Pat', age: 24 },
+				  { name: 'Adam', age: 31 },
+				  { name: 'Dan', age: 28 }
+				]
+			  }
+			  
+			  <Person name={this.state.persons[0].name} age={this.state.persons[0].age}/>
+			  
+39. Props & State PDF Resource
+
+40. Handling Events with Methods
+	- You can put onClick to listen to clicks and have a function run on click. 
+		ex. <button onClick={this.switchAgeHandler} >Switch Name</button>
+			
+			  switchAgeHandler = () => {
+				console.log('Was clicked!');
+			  }
+			  
+41. Events You can listen to
+	- onCopy onCut onPaste
+	- onKeyDown onKeyPress onKeyUp
+	- Mouse events
+		- onClick onContextMenu onDoubleClick onDrag onDragEnd onDragEnter onDragExit
+			onDragLeave onDragOver onDragStart onDrop onMouseDown onMouseEnter onMouseLeave
+			onMouseMove onMouseOut onMouseOver onMouseUp
+	- More info at https://reactjs.org/docs/events.html#supported-events
+	
+42. Manipulating the State
+	- You can manipulate the state with this.setState({state object prop})
+	- This function will merge the current state object with the property of state that you could like to change. 
+	
+44. Using the useState() Hook for State Manipulation
+	- Hooks can be used to change state in functional components.
+	- We still use setState() to mutate state in most cases.
+	
+	
+	- The second parameter of useState() aka the setPersonsState does NOT merge the state!!
+	- You can use useState many times and create many state objects to manage.
+	- In functional components you use many state objects!
+	
+	- There are more hooks that we will explore later that reference "useEtc()" to manange stuff in funcation components.
+	
+45. Stateless vs Stateful Components
+	- You want to limit the amount of stateful (smart) components within your app
+		- Allows you to see clearly where all the logic lies when you need to make a change.
+		- Stateless components are called presentation components or dumb components.
+
+	- Having too many stateful components will create spaghetti code.
+	
+46. Passing Method Refreences Between Components
+	- You can pass methods to components.
+		ex.   userNameHandler = (newUserName) => {
+				this.setState({
+				  users: [
+					{userName: newUserName},
+					{userName: "dmose"}
+				  ]
+				})
+			  }
+			  
+			onClick={this.switchPersonsHandler.bind(this, 'Patrick')
+
+47. Adding Two Way Binding
+	- Add the property OnChanged to an input value to change the value dynamically as someone types
+		ex.		changed={this.nameChangedHandler}></Person>  (parent)
+				<input type="text" onChange={props.changed} value={props.name} /> (child)
+	- Include the value of the input to the props name so that it will be there from the start (value={props.name})
+	
+	- This will give you an ERROR if you don't have the input set up to update. (locks the input because it is always being updated to the current value)
+	
+48. Adding Syling with Stylesheets
+	
+	
+
+

@@ -1,0 +1,75 @@
+Section 4: Working with Lists and Conditionals
+
+53. Module Introduction 
+
+	- You can hide a div in react by using a basic javascript turnery operator
+		ex.
+			{ this.state.Boolean ? 
+				<div>
+					...content...
+				</div> : null
+			}
+			
+	- This state variable can be changed in a handler by a button to toggle content
+	- Again JSX is just javascript so this works. 
+	
+54. Handling Dynamic Content "The JavaScript Way"
+
+	- In order to keep the render() method clean: output a variable of JSX outside of the 
+	
+	ex. 
+		let persons = null;
+		
+		if(this.state.showPersons){
+		  persons = (
+			<div>
+			  <Person 
+				name={this.state.persons[0].name} 
+				age={this.state.persons[0].age}/>
+			  <Person 
+				name={this.state.persons[1].name} 
+				age={this.state.persons[1].age}/>			  
+			</div>
+		  );
+		}
+
+		return (
+			{persons}
+		)
+		
+56. Outputting Lists
+	- MAPPPPPPP
+	- You can create a list of components by using the javascript function map
+		ex. 
+		  {this.state.persons.map(person => {
+            return <Person
+              name={person.name}
+              age={person.age} />
+          })}
+		  
+57. Lists & State
+	- The second parameter of the map function is index.
+	- Pass the index variable to a function to mutate the state for certain objects in the list
+	- obj.splice(index, lenth) will remove elements. 
+	
+58. Updating State Immutably
+	- When you are creating a temp copy of state you want to use immutability so that you don't change state 
+	ex. 
+		const persons = this.state.person.slice();
+		OR
+		const persons = [...this.state.persons];
+
+59. Lists & Keys
+	- When acting with lists React needs a key parameter on the component so that it can efficiently modify the dom
+	- Think of it like a primary key on a sql table
+	
+Split and join to turn the string into a js array to use map and splice
+needed for task 5 and 6!!
+
+<li>Create an input field (in App component) with a change listener which outputs the length of the entered text below it (e.g. in a paragraph).</li>
+<li>Create a new component (=> ValidationComponent) which receives the text length as a prop</li>
+<li>Inside the ValidationComponent, either output "Text too short" or "Text long enough" depending on the text length (e.g. take 5 as a minimum length)</li>
+<li>Create another component (=> CharComponent) and style it as an inline box (=> display: inline-block, padding: 16px, text-align: center, margin: 16px, border: 1px solid black).</li>
+<li>Render a list of CharComponents where each CharComponent receives a different letter of the entered text (in the initial input field) as a prop.</li>
+<li>When you click a CharComponent, it should be removed from the entered text.</li>
+<p>Hint: Keep in mind that JavaScript strings are basically arrays!</p>
