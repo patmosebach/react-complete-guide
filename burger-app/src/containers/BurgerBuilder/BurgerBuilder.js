@@ -19,7 +19,21 @@ class BurgerBuilder extends Component {
             cheese: 0,
             meat: 0
         },
-        totalPrice: 4
+        totalPrice: 4,
+        purchasable: false
+    }
+
+    updatePurchaseState(ingredients){
+
+        const sum = Object.keys(ingredients)
+            .map(igKey => {
+                return ingredients[igKey];
+            })
+            .reduce((sum, el) => {
+                return sum + el;
+            }, 0);
+
+        this.setState({purchasable: sum > 0})
     }
 
     addIngredientHandler = (ingredient) => {
@@ -38,7 +52,9 @@ class BurgerBuilder extends Component {
         this.setState({
             ingredients: updatedIngredients,
             totalPrice: newPrice
-        })
+        });
+
+        this.updatePurchaseState(updatedIngredients);
         
         //My personal attemp - NOT IMMUTABLE
         // const ingredients = this.state.ingredients;
@@ -66,7 +82,9 @@ class BurgerBuilder extends Component {
         this.setState({
             ingredients: updatedIngredients,
             totalPrice: newPrice
-        })
+        });
+
+        this.updatePurchaseState(updatedIngredients);
 
         //Personal Attemp - NOT IMMUTABLE
         // const ingredients = this.state.ingredients;
@@ -95,7 +113,8 @@ class BurgerBuilder extends Component {
                                 add={this.addIngredientHandler}
                                 remove={this.removeIngredientHandler}
                                 totalPrice={this.state.totalPrice}
-                                disabled={disabledInfo}/>
+                                disabled={disabledInfo}
+                                purchasable={this.state.purchasable}/>
             </Auxil>
         );
     }
