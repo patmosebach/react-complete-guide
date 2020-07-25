@@ -311,5 +311,61 @@ Section 8: A Real App: The Burger Builder App
 		pass prop puchasable to BuildControls component
 		
 	When you call a function that relies on the state right after this.setState(); you need to pass the updated state object that will be used.
+	
+137. Creating the Order Summary Modal
+	
+	Create new UI/Modal/Modal.js component that simply wraps the children.
+	
+		import React from 'react';
+		import classes from './Modal.css';
+
+		const modal = (props) => (
+			<div className={classes.Modal}>
+				{props.children}
+			</div>
+		);
+
+		export default modal;
 		
+	Pass a list component to the modal that dynamically shows the ingredients amounts
+	
+	components/Burger/OrderSummary/OrderSummary.js
+	
+		import React from 'react';
+		import Auxil from '../../../hoc/Auxil'
+
+		const orderSummary = (props) => {
+			const ingredientSummary = Object.keys(props.ingredients)
+				.map(igKey => {
+					if(props.ingredients[igKey] > 0){
+					return <li>{igKey}: {props.ingredients[igKey]}</li>
+					}
+				});
+
+			// <li>cheese: 4</li>
+
+			return (
+				<Auxil>
+					<h3>Your Order</h3>
+					<p>A delicious burger with the following ingredients:</p>
+					<ul>
+						{ingredientSummary}
+					</ul> 
+				</Auxil>
+			)
+		};
+
+		export default orderSummary;
 		
+138. Showing & Hiding the Modal (with animation!)
+
+	You can animate modals by changing the css classes in the inline styles like so
+	
+		<div className={classes.Modal}
+			style={
+				{transform: props.show ? 'translateY(0)' : 'translateY(-100vh)',
+				opacity: props.show ? '1' : '0'}}>
+			{props.children}
+		</div>
+		
+139. Implementing the Backdrop Component
