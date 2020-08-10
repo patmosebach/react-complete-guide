@@ -62,6 +62,8 @@ Section 8: A Real App: The Burger Builder App
 	
 	run: "npm run eject"
 	
+	npm install css-loader style-loader --save-dev
+	
 	Enable css modules by adding the following lines to the options for "css-loader" in both dev and prod webpack.config.dev.js and webpack.config.prod.js
 	
 		modules: true,
@@ -369,3 +371,70 @@ Section 8: A Real App: The Burger Builder App
 		</div>
 		
 139. Implementing the Backdrop Component
+
+	Simple backdrop js
+	
+		import React from 'react';
+		import classes from './Backdrop.css';
+
+		const backdrop = (props) => (
+			props.show ? <div className={classes.Backdrop} onClick={props.clicked}/> : null
+		);
+
+		export default backdrop;
+		
+	Simple backdrop css
+			
+		.Backdrop {
+			width: 100%;
+			height: 100%;
+			position: fixed;
+			z-index: 100;
+			left: 0;
+			top: 0;
+			background-color: rgba(0,0,0,0.5);
+		}
+		
+	Add a onclick to your backdrop to close the modal when you click outside of it.
+	
+140. Adding a Custom Button Component
+
+	Simple button Component
+		import React from 'react';
+		import classes from './Button.css';
+
+		const button = (props) => (
+			<button className={[classes.Button, classes[props.btnType]].join(' ')}
+				onClick={props.clicked}>{props.children}</button>
+
+		);
+
+		export default button;
+		
+	Simple Button component CSS
+		.Button {
+			background-color: transparent;
+			border: none;
+			color: white;
+			outline: none;
+			cursor: pointer;
+			font: inherit;
+			padding: 10px;
+			margin: 10px;
+			font-weight: bold;
+		}
+
+		.Button:first-of-type {
+			margin-left: 0;
+			padding-left: 0;
+		}
+
+		.Success {
+			color: #5C9210;
+		}
+
+		.Danger {
+			color: #944317;
+		}
+
+	
