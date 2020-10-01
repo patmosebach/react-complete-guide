@@ -1,7 +1,7 @@
 import React from 'react';
-import Auxil from '../../hoc/Auxil';
+import Auxil from '../Auxil/Auxil';
 import classes from './Layout.css';
-import Toolbar from '../Navigation/Toolbar/Toolbar';
+import Toolbar from '../../components/Navigation/Toolbar/Toolbar';
 
 const layout = (props) => (
     <Auxil>
