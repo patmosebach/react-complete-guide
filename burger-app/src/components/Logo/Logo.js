@@ -3,7 +3,7 @@ import burgerLogo from '../../assets/images/burger-logo.png';
 import classes from './Logo.css';
 
 const logo = (props) => (
-    <div className={classes.Logo}>
+    <div onClick={props.click} className={classes.Logo}>
         <img src={burgerLogo} />
     </div>
 );

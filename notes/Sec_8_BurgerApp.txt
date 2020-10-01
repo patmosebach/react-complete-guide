@@ -501,6 +501,8 @@ Section 8: A Real App: The Burger Builder App
 	
 145. Adding Reusable Navigation Items
 
+	The Idea is to create good looking tabs to use in the toolbar. 
+
 	Navigation Items
 	    <ul className={classes.NavigationItems}>
 			<NavigationItem link="/" active>Burger Builder</NavigationItem>
@@ -516,3 +518,43 @@ Section 8: A Real App: The Burger Builder App
 				className={props.active ? classes.active : null}>{props.children}</a>
 		</li>
 	
+146. SideDrawer 
+
+	import React from 'react';
+	import classes from './SideDrawer.css';
+
+	import Logo from '../../Logo/Logo';
+	import NavigationItems from '../NavigationItems/NavigationItems';
+
+
+	const sideDrawer = (props) => {
+		
+		//Conditional Classes
+
+			return(
+				<div className={classes.SideDrawer}>
+					<Logo />
+					<nav>
+						<NavigationItems />
+					</nav>
+				</div>
+			);
+		};
+
+		export default sideDrawer;
+	
+147. Working on Responsive Adjustments
+	
+	Problem: Logo is too big in the sideDrawer
+	
+		Solution 1: Add height prop to logo and add height as an inline style using props.height
+		
+		Solution 2: Wrap logo with <div> and add a class to the div that controls the height
+		
+150. Adding a sidedrawer toggle component
+
+	Be sure to use setState( (prevState) ()=>{}); when your state change relies on previous state
+	
+151. Prop types
+
+	Prop Type Validation is used in applications that are developed in parallel with other people or components meant for use among collaboration
