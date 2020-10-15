@@ -555,6 +555,18 @@ Section 8: A Real App: The Burger Builder App
 
 	Be sure to use setState( (prevState) ()=>{}); when your state change relies on previous state
 	
-151. Prop types
+153. Prop types
 
 	Prop Type Validation is used in applications that are developed in parallel with other people or components meant for use among collaboration
+	
+154. Improving performance
+
+	Most things *should* update components.
+	
+	Don't include too many pure components and ShouldComponentUpdate checks as they can effect the performance itself
+	
+	Check for display items that aren't visible on the screen always and limit their updates
+	
+		ex. Drawer, OrderSummary, Modals with dynamic content
+		
+
