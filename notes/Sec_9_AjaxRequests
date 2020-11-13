@@ -1,5 +1,11 @@
 Section 4: Working with Lists and Conditionals
 
+DOUBLE CHECK AJAX SECTION
+	npm install axios --save
+	
+	then
+	import axios from 'axios';
+
 162. Creating a HTTP request to GET Data 
 
 	Dummy axios call
