@@ -584,6 +584,6 @@ Section 8: A Real App: The Burger Builder App
 		ex. Drawer, OrderSummary, Modals with dynamic content
 		
 		
-Looking to work on a team of individuals that complement each other and work to improve the applications and products but also eachtoher's knowledge. Prefer to work on many different aspects of a product. Enhancing the frontend/api/database tech stack through an agile workflow. Looking to master React so that I can build well written effective applications quicker. Adept in C# but willing to learn other frameworks for APIs. Can work with most SQL frameworks.
+Prefer to work on many different aspects of a product with a team willing to improving each other's knowledge.  Looking to master React so that I can build well written effective applications quicker. Adept in C# but willing to learn other frameworks for APIs. Can work with most SQL frameworks.
 		
 
