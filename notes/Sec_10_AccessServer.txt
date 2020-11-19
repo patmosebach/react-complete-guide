@@ -51,3 +51,159 @@
 	Google css spinners for good spinner examples
 	
 	https://projects.lukehaas.me/css-loaders/
+	
+183. Handling errors
+
+	We can create a HOC that will wrap any component that uses axios 
+	
+	Within this HOC we listen for errors from axios to surface a modal and an associated error. 
+	
+	//ex Using HOC (containers/BurgerBuilder.js)
+	export default withErrorHandler(BurgerBuilder, axios);
+	
+	//ex withErrorHandler HOC (hoc/withErrorHandler.js)
+	import React, { Component } from 'react';
+
+	import Modal from '../../components/UI/Modal/Modal';
+	import Auxil from '../Auxil/Auxil';
+
+	const withErrorHandler = ( WrappedComponent, axios ) => {
+		return class extends Component {
+
+			state = {
+				error: null
+			}
+
+			componentDidMount(){
+				axios.interceptors.request.use(req => {
+					this.setState({error: null});
+					return req;
+				});
+
+				axios.interceptors.response.use(res => res, error => {
+					this.setState({error: error});
+				});
+			}
+
+			errorConfirmedHandler = () => {
+				this.setState({error: null});
+			}
+
+			render(){
+				return (
+					<Auxil>
+						<Modal 
+							show={this.state.error}
+							modalClosed={this.errorConfirmedHandler}>
+							{this.state.error ? this.state.error.message : null}
+						</Modal>
+						<WrappedComponent {...this.props} />
+					</Auxil>
+				);
+			}
+
+		}
+	}
+
+	export default withErrorHandler;
+	
+184. Retrieving Data from the Backend
+
+	-Retriving ingredients from the backend
+	
+		- You can manage the mongolike db in firebase manually
+		
+	-Grabbing ingredients from the get
+	
+	    componentDidMount(){
+
+			axios.get('/ingredients.json')
+				.then(res => {
+					this.setState({ingredients: res.data});
+				})
+				.catch(error => {
+					this.setState({error: true});
+				});
+		}
+		
+	- More complex render function to dynamically handle if the ingredients got set or not 
+	
+        let orderSummary = null;
+        let burger = this.state.error ? <p>Ingredients can't be loaded</p> : <Spinner/>;
+
+        if(this.state.ingredients){
+
+            orderSummary = <OrderSummary ingredients={this.state.ingredients} cancel={this.purchaseCancelHandler} price={this.state.totalPrice} continue={this.purchaseContinueHandler}/>;
+
+            burger = <Auxil>
+                        <Burger ingredients={this.state.ingredients}/>
+                        <BuildControls ingredients={this.state.ingredients}
+                            add={this.addIngredientHandler}
+                            remove={this.removeIngredientHandler}
+                            totalPrice={this.state.totalPrice}
+                            disabled={disabledInfo}
+                            purchasable={this.state.purchasable}
+                            order={this.purchaseHandler}/>
+                    </Auxil>;
+        }
+
+        if(this.state.loadingOrders){
+            orderSummary = <Spinner/>;
+        }
+		
+	- Be sure to put the interceptor error handling in hoc/withErrorHandler in the constructor as ComponentDidMount runs after the children render and componentWillMount is being depricated :)
+	
+	        constructor(props){
+				super();
+				
+				axios.interceptors.request.use(req => {
+					this.setState({error: null});
+					return req;
+				});
+
+				axios.interceptors.response.use(res => res, error => {
+					this.setState({error: error});
+					return Promise.reject(error);
+				});
+			}
+			
+185. Removing old interceptors
+
+	- Because withErrorHandler can wrap many components. We can end up with multiple calls to componentWillMount and thus multiple listeners to the axios instances we created.
+	
+	- Use componentWillUnmount or the return method of useEffect() hook
+	
+	- Store the interceptors in component properties so that they can be unmounted in componentWillUnmount 
+	
+		componentWillUnmount(){
+            axios.interceptors.request.eject(this.reqInterceptor);
+            axios.interceptors.response.eject(this.resInterceptor);
+        }
+		
+	- You can test the componentWillUnmount function by removing components dynamically in App.js routing by adding a simple show to the state
+	
+	class App extends Component {
+
+	  state = {
+		show: true
+	  }
+
+	  componentDidMount(){
+		setTimeout(() => {
+		  this.setState({show: false})
+		}, 5000)
+	  }
+
+	  render() {
+		return (
+		  <div>
+			<Layout>
+			  {this.state.show ? <BurgerBuilder/> : null}
+			  
+			</Layout>
+		  </div>
+		);
+	  }
+	}
+
+	export default App;
