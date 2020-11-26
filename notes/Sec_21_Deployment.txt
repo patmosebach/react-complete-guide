@@ -1,0 +1,71 @@
+Section 7: Deploying the App to the Web
+
+365. Deployment Steps
+
+	Check (& Adjust) Basepath
+		<BrowserRouter basename="/my-app/">
+		
+	Build & Optimize Project
+		npm run build in create-react-app project
+		
+	Server must Always serve index.html (also for 404 cases)
+	
+	Upload Build Artifacts to (static) Server
+	
+366. Building the Project
+	
+	-npm run build
+	
+	ship entire build folder to static server and you're done :)
+	
+	npm install -g firebase-tools (might need to configure some settings in vscode)
+	
+	-firebase init
+
+			 ######## #### ########  ######## ########     ###     ######  ########
+			 ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+			 ######    ##  ########  ######   ########  #########  ######  ######
+			 ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+			 ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+		You're about to initialize a Firebase project in this directory:
+
+		  C:\src\portfolio\pmose-portfolio
+
+		Before we get started, keep in mind:
+
+		  * You are currently outside your home directory
+
+		? Are you ready to proceed? Yes
+		? Which Firebase CLI features do you want to set up for this folder? Press Space to select features, then Enter to confirm your choices. Hosting: Configure and deploy Firebase Hosting sites
+
+		=== Project Setup
+
+		First, let's associate this project directory with a Firebase project.
+		You can create multiple project aliases by running firebase use --add,
+		but for now we'll just set up a default project.
+
+		? Please select an option: Use an existing project
+		? Select a default Firebase project for this directory: portfolio-2e7c5 (Portfolio)
+		i  Using project portfolio-2e7c5 (Portfolio)
+
+		=== Hosting Setup
+
+		Your public directory is the folder (relative to your project directory) that
+		will contain Hosting assets to be uploaded with firebase deploy. If you
+		have a build process for your assets, use your build's output directory.
+
+		? What do you want to use as your public directory? build
+		? Configure as a single-page app (rewrite all urls to /index.html)? Yes
+		? Set up automatic builds and deploys with GitHub? No
+		? File build/index.html already exists. Overwrite? No
+		i  Skipping write of build/index.html
+
+		i  Writing configuration info to firebase.json...
+		i  Writing project information to .firebaserc...
+
+		+  Firebase initialization complete!
+		
+	- Deploying
+		
+		firebase deploy 

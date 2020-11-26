@@ -1,4 +1,5 @@
-Section 4: Working with Lists and Conditionals
+Section 9: Sending Ajax reqeusts and getting data from server and APIs
+
 
 DOUBLE CHECK AJAX SECTION
 	npm install axios --save

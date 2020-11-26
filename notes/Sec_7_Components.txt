@@ -222,6 +222,7 @@ Section 7: Diving Deeper into Components and React Internals
 	
 	You can also create and return children from an auxillary component.
 	
+	!!!!!!!!!Use <React.Fragment> instead if above Reavt v16.2
 	Auxillary.js		
 		const auxillary = props => props.children;
 

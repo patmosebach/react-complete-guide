@@ -49,5 +49,341 @@ http--01-starting-setup application
 192. Preparing the Project for routing
 
 	This was mainly restructuring and breaking the blog container into different containers for each page :)
+	
+193. Setting Up and Rendering Routes
 
+	Import the Route component from react-router-dom 
+	
+	note: path specified what path needs to be for the anonymous function to run. exact specified it must match exactly, without it "/" will render any path that STARTS with "/"
+	
+			<Route path="/" exact render={() => <h1>Home</h1>} />
+			<Route path="/" exact render={() => <h1>Home 2</h1>} />
+			
+194. Rendering Components for Routes
+
+	note: Alternative way with attribute component rather than render (this may get used more often)
+
+		<Route path="/" exact component={Posts} />
+		<Route path="/new-post" exact component={NewPost} />
+		
+195. Switching between pages
+
+	Problem statement: When we switch pages as implemented react reloads the entire page. We want to just rerender stuff. 
+	
+196. Using links to switch pages
+
+	Answer: User react-router-dom Links :D
+	
+	note: You can point with just to attribute. Or configure the to with parameters such as pathname for path, hash for # id anchors, and search queries added to the end of the path. NewPost url ends up as http://localhost:3000/new-post?quick-submit=true#submit
+	
+	hash = Jump to id 
+	search = add query params
+	
+	ex. 
+		<nav>
+			<ul>
+				<li><Link to="/">Home</Link></li>
+				<li><Link to={{
+					pathname: '/new-post',
+					hash: '#submit',
+					search: '?quick-submit=true'
+				}}>New Post</Link></li>
+
+			</ul>
+		</nav>
+		
+197. Using Routing-Related props
+
+	Note: Lets look at props that are routing related.
+	
+	match: Contains data that resulted in the component or render being rendered based on the path match given
+	location: data on where we are in the application (includes hash id and search query on url)
+	history: A linked list of paths that we have visitied. As well as functions we can use such as goForward and goBack
+	
+198. The "withRouter" HOC & Route Props
+
+	Problem: How do we propogate the routing related props to children?
+	
+	Solution: You can spread this.props on the component
+	
+				You can also use withRouter component
+				
+	TLDR; withRouter is a quick way to make a component route aware
+	
+199. Absolute vs relative paths
+
+	You can append the path to the relative path in the Link component by using the this.props.match.url to create a dynamic relative path
+	
+	ex.
+		<Link to={{
+			pathname: this.props.match.url + '/new-post',
+		}}>New Post</Link>
+		
+201. Styling the Active route
+
+	USE LINK WHEN NOT STYLING ROUTES
+	
+	USE NAVLINK WHEN STYLING ROUTES
+	
+	If you'd like to use the active class be sure to use the NavLink component instead of Link so that the anchor gets set to class="active" so we can style for active
+	
+	be sure to use 'exact' prop on NavLink so that they aren't both active matches
+	
+	Perhaps you would like to use a different class than active
+	
+		use the activeClassname=*string* prop
+
+	You can also use activeStyle=*javascript object*
+	
+		activeStyle={{color:'black', textDecoration:'underline'}}
+		
+202. Passing Route Parameters
+
+	You can add dynamic paths using the : 
+
+	<Route path="/:id" exact component={FullPost} />
+	
+	Be sure to add ad many links in a loop in whatever component you will be using 
+	
+	return <Link to={'/' + post.id} key={post.id}>
+			<Post  
+				author={post.author}
+				title={post.title} 
+				clicked={() => this.postSelectedHandler(post.id)}/>
+		</Link>
+		
+203. Extracting Route Parameters
+
+	If you need to access the :id dynamic parameter that we added simply use props.match.params.id
+	
+204. Parsing Query Paramter and the fragment
+
+	Similarly for query params 
+	
+		<Link to="/my-path?start=5">Go to Start</Link>
+		
+		OR
+		
+		to={‌{
+			pathname: '/my-path',
+			search: '?start=5'
+		}}
+	
+	You can simply use props.location.search
+	
+	Fragments
+	
+		<Link to="/my-path#start-position">Go to Start</Link>
+		
+		OR 
+		
+		to={‌{
+			pathname: '/my-path',
+			hash: 'start-position'
+		}}
+	
+	USE props.location.hash
+	
+205. Using Switch to Load a Single Route
+
+	Problem: our new dynamic "/:id" path encompasses /new-post becasue it thinks "new-post" is an ID
+	
+	Solution 1: we could put "posts/:id" instead so that it is unique apart from "new-post"
+	
+	Solution 2: Use the Switch component from 'react-router-dom'
+	
+		note: this will only match the first Route that matches 
+		
+		ex. 
+			<Switch>                
+				<Route path="/" exact component={Posts} />
+				<Route path="/new-post" component={NewPost} />
+				<Route path="/:id" exact component={FullPost} />
+			</Switch>
+			
+206. Navigating Programatically
+
+	Use cases: You want to navigate after something finishes i.e. after an http request finishes
+	
+	Note: you can take advantage of that history object that is passed in the props
+	
+	i.e. goBack(), goForward(), push()
+	
+	push() allows you to push a new page on the stack of pages.
+	
+	ex.
+		postSelectedHandler=(id) => {
+			this.props.history.push({pathname: '/' + id});
+			// this.props.history.push('/' + id);
+		}
+		
+207. Additional information regarding Active Links
+
+	Problem: The root url can be hard to have different cases for the active tag becasue it matches on other pages without the 'exact' prop set to true.
+	
+	Solutions: Don't use the root url for stuff you want to have multiple pages underneath if you'd like to style to path.
+	
+	This is an edge case that is hard to fix
+	
+208. Understanding Nested Routes
+
+	When we wrap the FullPost component in Posts with Route component it will stop rendering becasue the post isn't being rendered when we switch. 
+	
+	Solution: removing the exact prop from the original and putting it below the new-post in the switch in Blog.js this allows them to render properly
+	
+	For a dynamic path on a relative path be sure to use a dynamic path so that it always check out. 
+	
+	ex. 
+		path={this.props.match.url + '/:id'}
+		
+209. Creating dynamic nested routes
+
+	Since we updated the routing to update dynamically we need to create a loadData method and add it to both componentDidMount() AND componentDidUpdate becasue now when we click a new component it wont show the new version. This comes with making sure the if conditions are good before reaching out to the web.
+	
+210. Redirecting Requests
+
+	You may want to have the same component render for "/" AND "/posts/"
+	
+	Use the Redirect component
+	
+	ex. 
+		<Redirect from="/" to="/posts" />
+		
+211. Conditional Redirects
+
+	You can add a redirect component to the JSX of a component and render it conditionally with a state variable such as 'submitted' 
+	
+	ex.
+		{this.state.submitted ? <Redirect to="/posts" /> : null }
+		
+		OR
+		
+		// let redirect = null;
+        // if(this.state.submitted){
+        //     redirect = <Redirect to="/posts" />;
+        // }
+		
+		// {redirect}
+		
+212. Using the History Prop to redirect (replace)
+
+	Rather than using the JSX to conditionally render the <Redirect/> component you can always use the history router related prop that is given to push() a new page
+	
+	ex.
+		this.props.history.push('/posts');
+		
+	REDIRECT REPLACES THE CURRENT PAGE ON THE HISTORY STACK
+	
+	for this reason using history.push is often the better solution but you can choose exactly what functionality you would like
+	
+	You can mimic this behavior by using history.replace();
+	
+213. Using Navigation Guards
+
+	Use case: When you aren't sure if the user is authenticated or not
+	
+	Problem: Make sure that a user is authenticated before accessing a page
+	
+	Solution: Simply use a state variable "auth" and dynamically add and remove the Route component paths you would like to show depending on that variable
+	
+	Alt Solution: Add the state variable to the rendered page and dynamically add the entire render return jsx object
+	
+	Alt Solution: check if the user is auth in componentDidMount and redirect using this.props.history.replace if he is not :)
+	
+214. Handle 404 case (unknown routes)
+
+	Solution Head back to the home page :)
+
+		The original case of just having a catch all Redirect from "/" to "/posts" or "/home" so that if the switch doesn't find anyting if just goes back to the home page
+		
+		ex.
+			<Redirect from="/" to="/posts" />
+	
+	Solution Render a page if the path is wrong
+	
+		You can also leave the to prop out of the <Route> component and will render something in the case that nothing is found. It doesn't work with the <Redirect from='/' to="/posts"
+		
+		ex.
+			<Route render={() => <h1>Not found</h1>} />
+			
+215. Loading Routes Lazily
+
+	Why download every page of the app before we actually load the page that we downloaded?
+	
+	Might not matter for small apps but for larger apps it could be useful
+	
+	Lazy loading / code splitting 
+	
+	Code splitting relies on the webpack version you are using
+	
+	You can create a hoc to load these components asyncronously
+	
+	ex.
+		import React, { Component } from 'react';
+
+		const asyncComponent = (importComponent) => {
+			return class extends Component {
+				state = {
+					component: null
+				}
+
+				componentDidMount(){
+					importComponent()
+						.then(cmp => {
+							this.setState({component: cmp.default});
+						});
+				}
+				render() {
+					const C = this.state.component;
+
+					return C ? <C {...this.props} /> : null;
+				}
+			}
+		};
+
+		export default asyncComponent;
+		
+	ex. Use
+		import asyncComponent from '../../hoc/asyncComponent';
+
+		const AsyncNewPost = asyncComponent(() => {
+			return import('./NewPost/NewPost');
+		});
+	
+	
+216. Lazy Loading with React Suspense (16.6)
+
+	check package.json for react version
+	
+	//Import
+	const Posts = React.lazy(() => import('./containers/Posts'));
+	
+	//Using the Import
+	<Route
+		path="/posts"
+		render={() => (
+			<Suspense fallback={<div>Loading...</div>}>
+				<Posts />
+			</Suspense>
+		)}
+		
+	This can be extended to conditionally render components without any routing
+	
+217. Routing & The Server (Deployment)
+
+	The dev server (local) we use will always load index.html but you will need to configure your own server to do the same.
+	
+	You need to set the base path!!!
+	
+	<BrowserRouter basename='/'>
+		<div className="App">
+		  <Blog />
+		</div>
+	</BrowserRouter>
+	
+	if you are running your app from www.hellogames.com/my-app the basepath needs to be different
+	
+	basename="/my-app"
+	
+	
 	
