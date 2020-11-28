@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 
 import './Courses.css';
+import { Route, Link } from 'react-router-dom';
+import Course from '../../containers/Course/Course';
+
+
 
 class Courses extends Component {
     state = {
@@ -18,10 +22,17 @@ class Courses extends Component {
                 <section className="Courses">
                     {
                         this.state.courses.map( course => {
-                            return <article className="Course" key={course.id}>{course.title}</article>;
+                            return <Link 
+                                        to={{pathname:"/courses/" + course.id, search: '?title=' + course.title }} 
+                                        key={course.id}>
+                                        <article className="Course" >
+                                            {course.title}
+                                            </article>
+                                    </Link>;
                         } )
                     }
                 </section>
+                <Route path={this.props.match.url + '/:id'} exact component={Course} />
             </div>
         );
     }
