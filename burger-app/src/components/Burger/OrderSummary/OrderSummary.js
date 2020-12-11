@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import Auxil from '../../../hoc/Auxil/Auxil';
 import Button from '../../UI/Button/Button';
-import { render } from 'react-dom';
 
 class OrderSummary extends Component {
 
