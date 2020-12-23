@@ -1,0 +1,121 @@
+Section 12 Adding routing to the burger app
+
+225. Passing ingredients with search params
+
+	//BurgerBuilder.js passing params in navigation
+	
+		const queryParams = [];
+
+        for(let i in this.state.ingredients){
+            queryParams.push(encodeURIComponent(i) = '=' + encodeURIComponent(this.state.ingredients[i]));
+        }
+        const queryString = queryParams.joing('&');
+
+        this.props.history.push({
+            pathname: "/checkout",
+            search: '?' + queryString
+        });
+		
+	//Checkout.js recieving params on mount()
+	
+		componentDidMount(){
+			const query = new URLSearchParams(this.props.location.search);
+			const ingredients = {};
+			for (let param of query.entries()){
+				//['salad', '1'],
+
+				ingredients[param[0]] = +param[1];
+			}
+			this.setState({ingredients: ingredients});
+		}
+		
+		
+226. Contact Form
+	
+	Quick Contact form .js
+		render(){
+			return(
+				<div className={classes.ContactData}>
+					<h4>Enter your Contact Data</h4>
+					<form>
+						<input className={classes.Input} type="text" name="name" placeholder="Name" />
+						<input className={classes.Input} type="email" name="email" placeholder="Email" />
+						<input className={classes.Input} type="text" name="street" placeholder="Street Address" />
+						<input className={classes.Input} type="text" name="postal" placeholder="Postal Code" />
+						<Button btnType="Success" clicked={this.orderHandler}>ORDER</Button>
+					</form>
+				</div>
+			)
+		}
+		
+	.css
+		.ContactData {
+			margin: 20px auto;
+			width: 80%;
+			text-align: center;
+			box-shadow: 0 2px 3px #ccc;
+			border: 1px solid #eee;
+			padding: 10px;
+			box-sizing: border-box;
+		}
+
+		.Input {
+			display: block;
+		}
+
+		@media (min-width: 600px){
+			.ContactData{
+				width: 500px;
+			}
+		}
+		
+227. Passing data between pages
+
+	You can use <Route **render={() => {}}** /> to pass props to the component being routed to
+	
+		<Route 
+			path={this.props.match.path + '/contact'} 
+			render={() => (<Contact ingredients={this.state.ingredients}/>)} />
+			
+229. Adding navigation links
+
+	Changed navItem from <a> to <NavLink> instead of <Link> so that the active sytling was kept
+	
+	Beware of CSS modules!!
+		We shouldnt need to change activeClassName but since Modules transform css to different unique names we need to give the className
+		
+		ex.
+			<NavLink 
+				to={props.link}
+				activeClassName={classes.active}>{props.children}</NavLink>
+
+
+230. Fetching Orders
+
+	//Notice that this spreads the data into a new object with the keys so that you're basically reducing the data one order higher but keeping the key. This makes the syntax for pullinig them out in the next lecture cleaner
+
+	state={
+        orders: [],
+        loading: true
+    }
+
+    componentDidMount(){
+
+        axios.get('/orders.json')
+            .then(res => {
+                console.log(res.data);
+                let fetchedOrders = [];
+
+                for(let key in res.data){
+                    fetchedOrders.push({
+                        ...res.data[key],
+                        id: key
+                    });
+                }
+
+                this.setState({loading: false, orders: fetchedOrders})
+            })
+            .catch(error => {
+                this.setState({error: true, loading: false});
+            });
+    }

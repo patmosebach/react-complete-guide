@@ -1,0 +1,10 @@
+.Order{
+    width: 90%;
+    margin-left:50%;
+    margin-bottom: 30px;
+    transform: translate(-50%, 0);
+    border-color: #444;
+    border-width: 1px;
+    border-style: solid;
+    box-shadow: 0 2px 3px #ccc;
+}
