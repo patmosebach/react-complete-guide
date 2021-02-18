@@ -1,0 +1,123 @@
+Sec 26 Hooks
+
+426. What are "React Hooks"?
+	
+	- Help us use functional components more efficiently
+	
+	- Class components use state and buisness logic goes there
+	
+	- Problems
+		- Conversion from funcational to class based is annoying
+		- Lifecycle hooks can be hard to use properly
+		
+428. Getting started with useState()
+	
+	useState() can be initialized with an initial state
+	
+		similar to state = {} in class based components
+		
+	Class based state variable MUST be an object
+	Functional based state variable can be an array, object, number, string, bool etc.
+		
+	ex.
+	
+		//Default state 
+		const inputState = useState({title: '', amount: ''});
+		
+		//Focus on use of useState hook varaible 'inputState' created above used in value={inputState[0].title} onChange={event => inputState[1]({title: event.target.value})}
+		return(
+		......
+		  <div className="form-control">
+            <label htmlFor="title">Name</label>
+            <input type="text" id="title" value={inputState[0].title} onChange={event => inputState[1]({title: event.target.value})} />
+          </div>
+          <div className="form-control">
+            <label htmlFor="amount">Amount</label>
+            <input type="number" id="amount" value={inputState[0].amount} onChange={event => inputState[1]({amount: event.target.value})} />
+          </div>
+		........
+		);
+		
+		
+	
+	
+	1st element of return array: current state snapshot for this rerender cycle (initial or updated state)
+	2nd element: function that allows you to update your state (dispatch function)
+	
+
+429. More on useState() & updating state
+
+	One inportant difference to note between updating state in class vs functional components
+		
+	Class:
+		State must always be an object
+		Whatever object you pass in was automatically merged with the existing object
+		
+	Functional:
+		Updating function replaces existing state with one passed. 
+		
+	- You need to maintain the state variable yourself 
+	
+	- Instead of setting other non changing elements use prevInputState to force a wait for the previous render cycle
+	- Be sure that you aren't using the previous event object. React keeps that variable stored so you may need to grab the new value with: const newTitle = event.target.value
+		
+		
+		  onChange={event => {
+			const newTitle = event.target.value
+			inputState[1](prevInputState => ({
+			  title: newTitle, 
+			  amount: prevInputState.amount
+			}))
+		  }} 
+		  
+430. Array Destructuring 
+	
+		Problem: accessing the useState array is clunky ex. inputState[1](//new state obj) && inputState[0].amount
+			- The set function in element 2 is clunky and doens't look imediately like a function
+			
+		Solutions: Array Destructuring.
+			- declare your state like so:
+				const [ inputState, setInputState ] = useState({title: '', amount: ''});
+
+			- Use the array variables like so:
+				//Accessing state
+				inputState.title
+				
+				//Using state setter function 
+				setInputState(prevInputState => ({
+                  title: newTitle, 
+                  amount: prevInputState.amount
+                }))
+				
+431. Multiple States
+	
+	- You can split your state into multiple states per variable or object you wish to maintain
+		- This way you don't need to worry about losing the other variables on the same useState variable
+		
+
+	const [ title, setTitle ] = useState('');
+	const [ amount, setAmount ] = useState('');
+  
+	<input 
+	  type="number" 
+	  id="amount" 
+	  value={inputState.amount} 
+	  onChange={event => {
+		const newAmount = event.target.value;
+		setInputState(prevInputState => ({ 
+		  title: prevInputState.title, 
+		  amount: newAmount
+		}))
+	  }}
+	/>
+	
+432. Rules of Hooks
+	- Only use inside of functional components (or a custom hook)
+	- Only use hook inside of root level of the components
+		- Never use hooks inside of functions or nested functions
+	- Cannot used hooks inside if statements
+	
+433. Passing state data between components
+
+		
+	
